@@ -35,10 +35,7 @@ $link = pg_connect("CONNECT");
 $query = pg_query($link, "SELECT * FROM ideas;");
 
 while($result = pg_fetch_assoc($query)) {
-echo '<div class="idea">
-	'.$result['idea'].'
-	<div class="description">'.$result['description'].'</div>
-</div>';
+    echo '<div class="idea">'.$result['idea'].'<div class="description">'.$result['description'].'</div></div>';
 }
 ?>
 	
