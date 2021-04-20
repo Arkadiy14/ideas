@@ -1,25 +1,26 @@
 <?php
 if(isset($_POST['button'])) {
-	$link = pg_connect("CONNECT");
-	$query = pg_prepare($link, "my_query", 'INSERT INTO ideas (idea, description) VALUES ($1, $2)');
-	$info = explode(':', $_POST['idea']);
+    $link = pg_connect("CONNECT");
+    $query = pg_prepare($link, "my_query", 'INSERT INTO ideas (idea, description) VALUES ($1, $2)');
+    $info = explode(':', $_POST['idea']);
 
-	if(isset($info[0]) && isset($info[1])) {
-		$idea = $info[0];
-		$description = $info[1];
-	    $result = pg_execute($link, "my_query", array($idea, $description));
-	    header('location: https://'.$_SERVER['HTTP_HOST']);	
-	}else {
-		header('location: https://'.$_SERVER['HTTP_HOST']);	
-	}
+    if(isset($info[0]) && isset($info[1])) {
+	$idea = $info[0];
+	$description = $info[1];
+        $result = pg_execute($link, "my_query", array($idea, $description));
+        header('location: https://'.$_SERVER['HTTP_HOST']);	
+    }else {
+	header('location: https://'.$_SERVER['HTTP_HOST']);	
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Ideas</title>
-	<link rel="preconnect" href="https://fonts.gstatic.com">
+    <meta charset="utf-8">
+    <title>Ideas</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,6 +29,7 @@ if(isset($_POST['button'])) {
   <button name="button" type="submit">Add</button>
 </form>
 <div class="a"><a href="search.php">Want to find any idea? Click here!</a></div>
+	
 <?php
 $link = pg_connect("CONNECT");
 $query = pg_query($link, "SELECT * FROM ideas;");
@@ -39,6 +41,7 @@ echo '<div class="idea">
 </div>';
 }
 ?>
+	
 <style>
 * {
     box-sizing: border-box;
@@ -79,7 +82,7 @@ button {
 }
 
 .idea {
-	width: 600px;
+    width: 600px;
     margin: 0 auto;
     font-size: 20px;
     margin-top: 30px;
@@ -87,18 +90,18 @@ button {
 }
 
 .description {
-	font-size: 14px;
+    font-size: 14px;
 }
 
 .a {
-	text-align: center;
-	margin-top: 17px;
-	margin-bottom: -25px;
+    text-align: center;
+    margin-top: 17px;
+    margin-bottom: -25px;
 }
 
 a {
-	font-size: 15px;
-	text-decoration: none;
+    font-size: 15px;
+    text-decoration: none;
 }
 </style>
 </body>
