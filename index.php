@@ -1,6 +1,7 @@
 <?php
+$link = pg_connect("CONNECT");
+
 if(isset($_POST['button'])) {
-    $link = pg_connect("CONNECT");
     $query = pg_prepare($link, "my_query", 'INSERT INTO ideas (idea, description) VALUES ($1, $2)');
     $info = explode(':', $_POST['idea']);
 
@@ -31,7 +32,6 @@ if(isset($_POST['button'])) {
 <div class="a"><a href="search.php">Want to find any idea? Click here!</a></div>
 	
 <?php
-$link = pg_connect("CONNECT");
 $query = pg_query($link, "SELECT * FROM ideas;");
 
 while($result = pg_fetch_assoc($query)) {
