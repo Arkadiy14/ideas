@@ -27,7 +27,8 @@ if(isset($_POST['button']) && !empty($_POST['query'])) {
     $query = pg_prepare($link, "search_query", 'SELECT * FROM ideas WHERE idea LIKE $1');
     $execute = pg_execute($link, "search_query", array($words));
     while($result = pg_fetch_assoc($execute)) {
-        echo '<div class="idea">'.$result['idea'].'<div class="description">'.$result['description'].'</div></div>';
+        echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic'].'</div>
+		<div class="description">'.$result['description'].'</div></div>';
     }
 }
 ?>
@@ -92,6 +93,12 @@ button {
 a {
     font-size: 15px;
     text-decoration: none;
+}
+	
+.topic {
+    font-size: 15px;
+    float: right;
+    margin-top: 3px;
 }
 </style>
 </body>
