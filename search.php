@@ -8,12 +8,6 @@
 </head>
 <body>
 <form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post">
-  <select name="topics">
-   <option value="art">Art</option>
-   <option value="science">Science</option>
-   <option value="programming">Programming</option>
-   <option value="other">Other</option>
-  </select>
   <input class="search" name="query" placeholder="Type your query" type="search">
   <button name="button" type="submit">Find</button>
 </form>
@@ -23,24 +17,35 @@
 if(isset($_POST['button']) && !empty($_POST['query'])) {
     $link = pg_connect("CONNECT");
     $words = explode(' ', $_POST['query']);
-    $topic = $_POST['topics'];
 
     function newString($a) {
 	return '%'.$a.'%';
     }
 
-    $words = array_map('newString', $words);
-    $words = implode(' ', $words);
-    $query = pg_prepare($link, "search_query", 'SELECT * FROM ideas WHERE idea LIKE $1 OR description LIKE $1 AND topic = $2');
-    $execute = pg_execute($link, "search_query", array($words, $topic));
+    function up($a) {
+        return ucfirst($a);
+    }
+
+    function low($a) {
+        return lcfirst($a);
+    }    
+
+    $up = array_map('up', $words);
+    $low = array_map('low', $words);
+
+    $words_up = implode(' ', array_map('newString', $up));
+    $words_low = implode(' ', array_map('newString', $low));
+
+    $query = pg_prepare($link, "search_query", 'SELECT * FROM ideas WHERE idea LIKE $1 OR idea LIKE $2 OR description LIKE $1 OR description LIKE $2');
+    $execute = pg_execute($link, "search_query", array($words_up, $words_low));
     $message = '<h2 align="center">Nothing found!</h2>';
-	
+
     while($result = pg_fetch_assoc($execute)) {
-        echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic'].'</div>
-		<div class="description">'.$result['description'].'</div></div>';
+	echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic'].'</div>
+	<div class="description">'.$result['description'].'</div></div>';
 	$message = '';
     }
-	
+
     if(!$result) {
     	echo $message;
     }
@@ -60,21 +65,6 @@ form {
     margin-top: 50px;
 }
 
-select {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 50px;
-    width: 135px;
-    border: 2px solid #7BA7AB;
-    border-radius: 5px;
-    outline: none;
-    background: #F9F0DA;
-    color: #575555;
-    font-size: 18px;
-}
-	
-
 .search {
     width: 100%;
     height: 50px;
@@ -85,7 +75,6 @@ select {
     background: #F9F0DA;
     color: #575555;
     font-size: 18px;
-    padding-left: 138px;
 }
 
 button {
