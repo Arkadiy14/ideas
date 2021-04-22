@@ -33,9 +33,16 @@ if(isset($_POST['button']) && !empty($_POST['query'])) {
     $words = implode(' ', $words);
     $query = pg_prepare($link, "search_query", 'SELECT * FROM ideas WHERE idea LIKE $1 OR description LIKE $1 AND topic = $2');
     $execute = pg_execute($link, "search_query", array($words, $topic));
+    $message = '<h2 align="center">Nothing found!</h2>';
+	
     while($result = pg_fetch_assoc($execute)) {
         echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic'].'</div>
 		<div class="description">'.$result['description'].'</div></div>';
+	$message = '';
+    }
+	
+    if(!$result) {
+    	echo $message;
     }
 }
 ?>
@@ -96,7 +103,7 @@ button {
 }
 
 .idea {
-    width: 600px;
+    width: 700px;
     margin: 0 auto;
     font-size: 20px;
     margin-top: 30px;
