@@ -130,6 +130,10 @@ a {
     float: right;
     margin-top: 3px;
 }
+	
+h2 {
+    padding-top: 20px;
+}
 </style>
 </body>
 </html>
