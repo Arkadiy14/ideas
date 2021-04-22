@@ -1,44 +1,15 @@
 <?php
 $link = pg_connect("CONNECT");
 
-$topics = [
-    'art' => ['movie' => 'movie', 'book' => 'book', 'literature' => 'literature', 'film' => 'film', 'theatre' => 'theatre', 'dance' => 'dance', 'painting' => 'painting', 'music' => 'music'], 
-
-    'science' => ['biology' => 'biology', 'chemistry' => 'chemistry', 'maths' => 'maths', 'math' => 'math', 'linguistics' => 'linguistics', 'physics' => 'physics', 'geography' => 'geography'],
-
-    'programming' => ['program' => 'program', 'script' => 'script', 'bot' => 'bot', 'code' => 'code', 'array' => 'array', 'value' => 'value'],
-];// here are our topics
-
 if(isset($_POST['button'])) {
-    $query = pg_prepare($link, "my_query", 'INSERT INTO ideas (idea, description) VALUES ($1, $2)');
-    $info = explode(':', $_POST['idea']);
+    $info = explode(':', trim($_POST['idea']));
 
-    if(isset($info[0]) && isset($info[1])) {
+    if(!empty($info[0]) && !empty($info[1]) && !is_numeric($info[0]) && !is_numeric($info[1])) {
 	$idea = $info[0];
 	$description = $info[1];
-	$idea_words = str_word_count($idea, 1); // here we have everything from user's idea
-	$descr_words = str_word_count($description, 1); // here we have everything from user's description
+	$topic = $_POST['topics'];
 
-        $values = array_merge($topics['art'], $topics['science'], $topics['programming']);
-
-        $same_idea = array_intersect($idea_words, $values); // looking for identical words using idea
-        $same_descr = array_intersect($descr_words, $values); // looking for identical words using descr
-
-        $idea_word = explode(' ', implode(' ', $same_idea));
-        $descr_word = explode(' ', implode(' ', $same_descr));
-
-        $topic = 0; // main topic
-	    
-	foreach($topics as $k => $v) {
-	    if($topics[$k][$idea_word[0]] && $topics[$k][$descr_word[0]]) {
-	        $topic = $k;
-	        break;
-            }else {
-	        $topic = 'other';
-	    }
-
-        }
-
+	$query = pg_prepare($link, "my_query", 'INSERT INTO ideas (idea, description, topic) VALUES ($1, $2, $3)');
 	$result = pg_execute($link, "my_query", array($idea, $description, $topic));
         header('location: https://'.$_SERVER['HTTP_HOST']);	
     }else {
@@ -57,6 +28,12 @@ if(isset($_POST['button'])) {
 </head>
 <body>
 <form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post">
+  <select name="topics">
+   <option value="art">Art</option>
+   <option value="science">Science</option>
+   <option value="programming">Programming</option>
+   <option value="other">Other</option>
+  </select>
   <input class="add" name="idea" placeholder="Idea:description" type="text">
   <button name="button" type="submit">Add</button>
 </form>
@@ -78,10 +55,24 @@ echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic']
 
 form {
     position: relative;
-    width: 600px;
+    width: 700px;
     margin: 0 auto;
     margin-top: 50px;
 }
+
+select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 135px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #575555;
+    font-size: 18px;
+}	
 
 .add {
     width: 100%;
@@ -93,6 +84,7 @@ form {
     background: #F9F0DA;
     color: #575555;
     font-size: 18px;
+    padding-left: 138px;
 }
 
 button {
@@ -123,8 +115,8 @@ button {
 
 .a {
     text-align: center;
-    margin-top: 17px;
-    margin-bottom: -25px;
+    margin-top: 20px;
+    margin-bottom: -40px;
 }
 
 a {
