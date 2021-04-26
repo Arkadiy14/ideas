@@ -25,28 +25,6 @@ if(isset($_POST['button'])) {
     <title>Ideas</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-</head>
-<body>
-<form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post">
-  <select name="topics">
-   <option value="art">Art</option>
-   <option value="science">Science</option>
-   <option value="programming">Programming</option>
-   <option value="other">Other</option>
-  </select>
-  <input class="add" name="idea" placeholder="Idea:description" type="text">
-  <button name="button" type="submit">Add</button>
-</form>
-<div class="a"><a href="search.php">Want to find any idea? Click here!</a></div>
-	
-<?php
-$query = pg_query($link, "SELECT * FROM ideas;");
-
-while($result = pg_fetch_assoc($query)) {
-echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic'].'</div><div class="description">'.$result['description'].'</div></div>';
-}
-?>
-	
 <style>
 * {
     box-sizing: border-box;
@@ -130,5 +108,27 @@ a {
     margin-top: 3px;
 }
 </style>
+</head>
+<body>
+<form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post">
+  <select name="topics">
+   <option value="art">Art</option>
+   <option value="science">Science</option>
+   <option value="programming">Programming</option>
+   <option value="other">Other</option>
+  </select>
+  <input class="add" name="idea" placeholder="Idea:description" type="text">
+  <button name="button" type="submit">Add</button>
+</form>
+<div class="a"><a href="search.php">Want to find any idea? Click here!</a></div>
+	
+<?php
+$query = pg_query($link, "SELECT * FROM ideas;");
+
+while($result = pg_fetch_assoc($query)) {
+echo '<div class="idea">'.$result['idea'].'<div class="topic">'.$result['topic'].'</div><div class="description">'.$result['description'].'</div></div>';
+}
+?>
+	
 </body>
 </html>
